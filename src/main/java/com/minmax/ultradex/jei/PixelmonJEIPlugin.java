@@ -2,12 +2,14 @@ package com.minmax.ultradex.jei;
 
 import com.minmax.ultradex.UltraDex;
 import com.minmax.ultradex.jei.PixelmonDrop.PokemonCategory;
+import com.minmax.ultradex.jei.PixelmonDrop.PokemonWrapper;
 import com.pixelmonmod.api.registry.RegistryValue;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.entities.npcs.registry.DropItemRegistry;
 import jeresources.reference.Reference;
 import mezz.jei.api.IModPlugin;
@@ -19,10 +21,9 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.minmax.ultradex.UltraDex.LOGGER;
 
@@ -44,39 +45,41 @@ public class PixelmonJEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         PixelmonJEIPlugin.jeiHelpers = registration.getJeiHelpers();
-registration.addRecipeCategories(new PokemonCategory());
+        registration.addRecipeCategories(new PokemonCategory());
     }
 
     @Override
     public void registerRecipes(@Nonnull IRecipeRegistration registration) {
-        addVulpix();
+        registration.addRecipes(asRecipes(getVulpixes(), PokemonWrapper::new), POKEMON);
     }
 
-    private void addVulpix() {
+    @Nonnull
+    private List<PokemonDropInformation> getVulpixes() {
         RegistryValue<Species> vulpixSpecies = PixelmonSpecies.VULPIX;
         LOGGER.debug("vulpixSpecies: " + vulpixSpecies.toString());
         if (!vulpixSpecies.isInitialized()) {
             LOGGER.debug("vulpixSpecies not initialized");
-            return;
+            return Collections.emptyList();
         }
 
         Optional<Species> species = PixelmonSpecies.VULPIX.getValue();
         if (!species.isPresent()) {
             LOGGER.debug("vulpixSpecies not present");
-            return;
+            return Collections.emptyList();
         }
         Pokemon pokemon = PokemonFactory.create(species.get());
         LOGGER.debug("pokemon: " + pokemon.getDisplayName());
-        Set<PokemonDropInformation> dropsSet =  DropItemRegistry.pokemonDrops.get(species.get());
+        Set<PokemonDropInformation> dropsSet = DropItemRegistry.pokemonDrops.get(species.get());
         LOGGER.debug("drops: " + (dropsSet));
         if (dropsSet == null) {
-            return;
+            return Collections.emptyList();
         }
-        PokemonDropInformation[] drops = new ArrayList<>(dropsSet).toArray(new PokemonDropInformation[dropsSet.size()]);
-        LOGGER.debug("drops: " + Arrays.toString(drops));
-        if (drops.length > 0) {
-            LOGGER.debug("drops[0].getDrops(): " + drops[0].getDrops());
+        List<PokemonDropInformation> drops = new ArrayList<>(dropsSet);
+        LOGGER.debug("drops: " + drops);
+        if (drops.size() > 0) {
+            LOGGER.debug("drops[0].getDrops(): " + drops.get(0).getDrops());
         }
+        return drops;
     }
 
     public static void resetCategories() {
@@ -85,7 +88,12 @@ registration.addRecipeCategories(new PokemonCategory());
                 jeiRuntime.getRecipeManager().unhideRecipeCategory(category);
         }
     }
+
     public static IJeiHelpers getJeiHelpers() {
         return jeiHelpers;
+    }
+
+    private static <T, R> Collection<R> asRecipes(Collection<T> collection, Function<T, R> transformer) {
+        return collection.stream().map(transformer).collect(Collectors.toList());
     }
 }
