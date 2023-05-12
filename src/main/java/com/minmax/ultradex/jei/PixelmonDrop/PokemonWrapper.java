@@ -1,11 +1,12 @@
 package com.minmax.ultradex.jei.PixelmonDrop;
 
-import com.minmax.ultradex.utils.Compat;
-import com.minmax.ultradex.utils.Font;
-import com.minmax.ultradex.utils.RenderHelper;
+import com.minmax.ultradex.config.Settings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
+import jeresources.compatibility.CompatBase;
+import jeresources.util.Font;
+import jeresources.util.RenderHelper;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
@@ -52,7 +53,7 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
     public void drawInfo(int recipeWidth, int recipeHeight, @Nonnull MatrixStack matrixStack, double mouseX, double mouseY) {
         LivingEntity livingEntity = this.getLivingEntity();
 
-        RenderHelper.scissor(matrixStack,7, 43, 59, 79);
+        RenderHelper.scissor(matrixStack, 7, 43, 59, 79);
         this.scale = getScale(this.getLivingEntity());
         this.offsetY = getOffsetY(this.getLivingEntity());
         RenderHelper.renderEntity(
@@ -65,12 +66,12 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
         RenderHelper.stopScissor();
 
         String mobName = "Vulpix"; // TODO(minmax): get actual name
-//        if (Settings.showDevData) {
+        if (Settings.showDevData) {
             String entityString = livingEntity.getStringUUID();
             if (entityString != null) {
                 mobName += " (" + entityString + ")";
             }
-//        }
+        }
         Font.normal.print(matrixStack, mobName, 7, 2);
 //        Font.normal.print(matrixStack, this.mob.getBiomes().length > 1 ? TranslationHelper.translateAndFormat("jer.mob.biome") : TranslationHelper.translateAndFormat("jer.mob.spawn") + " " + this.mob.getBiomes()[0], 7, 12);
 //        Font.normal.print(matrixStack, this.mob.getLightLevel(), 7, 22);
@@ -81,6 +82,7 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
     public void onTooltip(int slotIndex, boolean input, @Nonnull ItemStack ingredient, @Nonnull List<ITextComponent> tooltip) {
 
     }
+
     private static float getScale(LivingEntity LivingEntity) {
         float width = LivingEntity.getBbWidth();
         float height = LivingEntity.getBbHeight();
@@ -101,11 +103,11 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
     }
 
     private LivingEntity getLivingEntity() {
-        return this.pokemonDropInformation.getPokemonSpec().create(Compat.getWorld());
+        return this.pokemonDropInformation.getPokemonSpec().create(CompatBase.getWorld());
     }
 
 
-    private int getOffsetY(LivingEntity livingEntity) {
+    private static int getOffsetY(LivingEntity livingEntity) {
         int offsetY = 0;
         if (livingEntity instanceof SquidEntity) offsetY = 20;
         else if (livingEntity instanceof TurtleEntity) offsetY = 10;

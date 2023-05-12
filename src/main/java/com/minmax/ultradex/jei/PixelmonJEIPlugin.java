@@ -30,7 +30,7 @@ import static com.minmax.ultradex.UltraDex.LOGGER;
 public class PixelmonJEIPlugin implements IModPlugin {
     private static final ResourceLocation UID = UltraDex.rl("main");
 
-    public static final ResourceLocation POKEMON = new ResourceLocation(Reference.ID, "mob");
+    public static final ResourceLocation POKEMON = new ResourceLocation(Reference.ID, "pokemon");
     public static final ResourceLocation[] CATEGORIES = {POKEMON};
     private static IJeiHelpers jeiHelpers;
     private static IJeiRuntime jeiRuntime;
