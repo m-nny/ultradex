@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PokemonSpawnHelper {
-    public static String getBiomes(Pokemon pokemon) {
+    public static List<String> getBiomes(Pokemon pokemon) {
         Map<String, List<SpawnSet>> spawnSets = PixelmonSpawning.getAll();
         if (!spawnSets.containsKey("standard")) {
             return null;
@@ -25,6 +25,6 @@ public class PokemonSpawnHelper {
                 .filter(spawnInfo -> (spawnInfo instanceof SpawnInfoPokemon) && ((SpawnInfoPokemon) spawnInfo).getPokemonSpec().matches(pokemon))
                 .flatMap(spawnInfo -> spawnInfo.condition.biomes.stream())
                 .map(ResourceLocation::toString)
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.toList());
     }
 }

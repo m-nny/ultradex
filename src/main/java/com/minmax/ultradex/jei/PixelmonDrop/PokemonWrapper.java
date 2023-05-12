@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.drops.ItemWithChance;
 import com.pixelmonmod.pixelmon.api.pokemon.drops.PokemonDropInformation;
 import com.pixelmonmod.pixelmon.api.util.helpers.PokemonHelper;
 import jeresources.compatibility.CompatBase;
+import jeresources.util.CollectionHelper;
 import jeresources.util.Font;
 import jeresources.util.RenderHelper;
 import mezz.jei.api.constants.VanillaTypes;
@@ -25,22 +26,29 @@ import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallback<ItemStack> {
     private final PokemonDropInformation pokemonDropInformation;
     private final Pokemon pokemon;
     private final LivingEntity livingEntity;
     private float scale;
+    private final List<String> biomes;
+    private final List<ItemWithChance> drops;
 
     private int offsetY;
 
     public PokemonWrapper(PokemonDropInformation pokemonDropInformation) {
         this.pokemonDropInformation = pokemonDropInformation;
         this.pokemon = this.pokemonDropInformation.getPokemonSpec().create();
+        this.biomes = PokemonSpawnHelper.getBiomes(this.pokemon);
+        this.drops = pokemonDropInformation.getDrops();
         this.livingEntity = this.pokemonDropInformation.getPokemonSpec().create(CompatBase.getWorld());
         this.scale = getScale(this.livingEntity);
         this.offsetY = getOffsetY(this.livingEntity);
@@ -48,11 +56,11 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
 
     @Override
     public void setIngredients(@Nonnull IIngredients ingredients) {
-        ingredients.setOutputs(VanillaTypes.ITEM, this.pokemonDropInformation.getDrops().stream().map(ItemWithChance::getItemStack).collect(Collectors.toList()));
+        ingredients.setOutputs(VanillaTypes.ITEM, this.getDrops().stream().map(ItemWithChance::getItemStack).collect(Collectors.toList()));
     }
 
     public List<ItemWithChance> getDrops() {
-        return this.pokemonDropInformation.getDrops();
+        return this.drops;
     }
 
     @Override
@@ -72,27 +80,44 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
         RenderHelper.stopScissor();
 
 
-        int curY = 2;
         String mobName = PokemonHelper.getFullName(pokemon).getString();
         if (Settings.showDevData) {
             String entityString = livingEntity.getStringUUID();
             mobName += " (" + entityString + ")";
         }
-        Font.normal.print(matrixStack, mobName, 7, curY);
-        if (!pokemon.getForm().isDefault()) {
-            curY += 10;
-            Font.normal.print(matrixStack, "Form: " + pokemon.getForm().getName(), 7, curY);
-        }
-        String biomes = PokemonSpawnHelper.getBiomes(pokemon);
-        if (biomes != null) {
-            curY += 10;
-            Font.normal.print(matrixStack, "Biomes: " + biomes, 7, curY);
-        }
+        Font.normal.print(matrixStack, mobName, 7, 2);
+        Font.normal.print(matrixStack, "Form: " + pokemon.getForm().getName(), 7, 12);
+        Font.normal.print(matrixStack, "Biomes", 7, 22);
+    }
+
+    @Nonnull
+    @Override
+    public List<ITextComponent> getTooltipStrings(double mouseX, double mouseY) {
+        if (isOnBiome(mouseX, mouseY))
+            return CollectionHelper.create(StringTextComponent::new, this.biomes.toArray(new String[0]));
+        return Collections.emptyList();
     }
 
     @Override
     public void onTooltip(int slotIndex, boolean input, @Nonnull ItemStack ingredient, @Nonnull List<ITextComponent> tooltip) {
+        List<ITextComponent> list = getToolTip(ingredient);
+        if (list != null)
+            tooltip.addAll(list);
+    }
 
+    public List<ITextComponent> getToolTip(ItemStack stack) {
+        for (ItemWithChance item : this.getDrops()) {
+            if (stack.sameItem(item.getItem()))
+                return getTooltipText(item);
+        }
+        return null;
+    }
+
+    private boolean isOnBiome(double mouseX, double mouseY) {
+        return 2 <= mouseX
+                && mouseX < 165
+                && 22 <= mouseY
+                && mouseY < 22 + 10;
     }
 
     private static float getScale(@Nonnull LivingEntity LivingEntity) {
@@ -131,6 +156,19 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
         else if (livingEntity instanceof BlazeEntity) offsetY = -10;
         else if (livingEntity instanceof CreeperEntity) offsetY = -15;
         return offsetY;
+    }
+
+    private static List<ITextComponent> getTooltipText(ItemWithChance item) {
+        return Collections.singletonList(new StringTextComponent(formatChance(item.getChance()) + " %"));
+    }
+
+    private static String formatChance(double chance) {
+        chance *= 100;
+        if (chance < 10) {
+            return java.lang.String.format("%.1f", chance);
+        } else {
+            return String.format("%2d", (int) chance);
+        }
     }
 
 }
