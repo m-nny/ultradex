@@ -44,6 +44,10 @@ public class PokemonWrapper implements IRecipeCategoryExtension, ITooltipCallbac
         ingredients.setOutputs(VanillaTypes.ITEM, this.pokemonDropInformation.getDrops().stream().map(ItemWithChance::getItemStack).collect(Collectors.toList()));
     }
 
+    public List<ItemWithChance> getDrops() {
+        return this.pokemonDropInformation.getDrops();
+    }
+
     @Override
     public void drawInfo(int recipeWidth, int recipeHeight, @Nonnull MatrixStack matrixStack, double mouseX, double mouseY) {
         LivingEntity livingEntity = this.getLivingEntity();
