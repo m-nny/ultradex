@@ -2,7 +2,6 @@ package com.minmax.ultradex.setup;
 
 import com.minmax.ultradex.input.KeyBindings;
 import com.minmax.ultradex.input.KeyInputHandler;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

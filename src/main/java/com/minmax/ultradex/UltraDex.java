@@ -7,6 +7,7 @@ import com.minmax.ultradex.setup.CommonSetup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +20,11 @@ public class UltraDex
 {
     public static final String MOD_ID = "ultradex";
     public static final Logger LOGGER = LogManager.getLogger();
+
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MOD_ID, path);
+    }
 
     public UltraDex() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonSetup::init);

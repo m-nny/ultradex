@@ -104,14 +104,23 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        // location of the maven that hosts JEI files
+        name "Progwml6 maven"
+        url "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name "ModMaven"
+        url "https://modmaven.dev"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
-    compileOnly fg.deobf("curse.maven:jer-240630:3435305-deobf-sources-api")
-
-    runtimeOnly fg.deobf("curse.maven:jei-238222:4371666")
-//    runtimeOnly fg.deobf("curse.maven:jer-240630:3435305")
+    implementation fg.deobf("curse.maven:pixelmon-389487:4395992")
+    compileOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
