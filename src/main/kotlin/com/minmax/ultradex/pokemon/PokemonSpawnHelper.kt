@@ -1,4 +1,4 @@
-package com.minmax.ultradex.jei.PixelmonDrop
+package com.minmax.ultradex.pokemon
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon
 import com.pixelmonmod.pixelmon.api.spawning.SpawnInfo
@@ -11,9 +11,9 @@ import java.util.stream.Collectors
 
 object PokemonSpawnHelper {
     @JvmStatic
-    fun getBiomes(pokemon: Pokemon): List<String>? {
+    fun getBiomes(pokemon: Pokemon): List<String> {
         val spawnSets = PixelmonSpawning.getAll()
-        val standardSpawnSet = spawnSets["standard"] ?: return Collections.emptyList();
+        val standardSpawnSet = spawnSets["standard"] ?: return Collections.emptyList()
 
         return standardSpawnSet.stream()
             .flatMap { spawnSet: SpawnSet -> spawnSet.spawnInfos.stream() }
