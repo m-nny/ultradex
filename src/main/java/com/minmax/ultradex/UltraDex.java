@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import thedarkcolour.kotlinforforge.forge.ForgeKt;
 
 @Mod(UltraDex.MOD_ID)
 public class UltraDex {
@@ -19,7 +20,7 @@ public class UltraDex {
     }
 
     public UltraDex() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonSetup::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
+        ForgeKt.getMOD_BUS().addListener(CommonSetup::init);
+        ForgeKt.getMOD_BUS().addListener(ClientSetup::init);
     }
 }
