@@ -1,12 +1,12 @@
 package com.minmax.ultradex.jei
 
 import com.minmax.ultradex.UltraDex
-import com.minmax.ultradex.jei.categories.pokemondrop.PokemonDropCategory
-import com.minmax.ultradex.jei.categories.pokemondrop.PokemonDropRecipe
-import com.minmax.ultradex.jei.categories.pokemonevolution.PokemonEvolutionCategory
-import com.minmax.ultradex.jei.categories.pokemonevolution.PokemonEvolutionRecipe
-import com.minmax.ultradex.jei.categories.pokemonspawn.PokemonSpawnCategory
-import com.minmax.ultradex.jei.categories.pokemonspawn.PokemonSpawnRecipe
+import com.minmax.ultradex.jei.categories.PokemonDropCategory
+import com.minmax.ultradex.jei.recipes.PokemonDropRecipe
+import com.minmax.ultradex.jei.categories.PokemonEvolutionCategory
+import com.minmax.ultradex.jei.recipes.PokemonEvolutionRecipe
+import com.minmax.ultradex.jei.categories.PokemonSpawnCategory
+import com.minmax.ultradex.jei.recipes.PokemonSpawnRecipe
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
 import com.minmax.ultradex.reference.Reference

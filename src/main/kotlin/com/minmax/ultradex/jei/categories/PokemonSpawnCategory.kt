@@ -1,9 +1,10 @@
 @file:Suppress("OVERRIDE_DEPRECATION")
 
-package com.minmax.ultradex.jei.categories.pokemonspawn
+package com.minmax.ultradex.jei.categories
 
 import com.minmax.ultradex.config.Settings
 import com.minmax.ultradex.jei.PixelmonJEIPlugin
+import com.minmax.ultradex.jei.recipes.PokemonSpawnRecipe
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
 import com.minmax.ultradex.reference.Resources

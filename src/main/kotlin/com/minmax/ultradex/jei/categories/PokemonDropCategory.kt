@@ -1,7 +1,8 @@
-package com.minmax.ultradex.jei.categories.pokemondrop
+package com.minmax.ultradex.jei.categories
 
 import com.minmax.ultradex.config.Settings
 import com.minmax.ultradex.jei.PixelmonJEIPlugin
+import com.minmax.ultradex.jei.recipes.PokemonDropRecipe
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
 import com.minmax.ultradex.reference.Resources
 import com.mojang.blaze3d.matrix.MatrixStack

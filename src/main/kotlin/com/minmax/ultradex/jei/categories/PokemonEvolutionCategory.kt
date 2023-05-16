@@ -1,8 +1,9 @@
 @file:Suppress("OVERRIDE_DEPRECATION")
 
-package com.minmax.ultradex.jei.categories.pokemonevolution
+package com.minmax.ultradex.jei.categories
 
 import com.minmax.ultradex.jei.PixelmonJEIPlugin
+import com.minmax.ultradex.jei.recipes.PokemonEvolutionRecipe
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
 import com.minmax.ultradex.reference.Resources
 import mezz.jei.api.gui.IRecipeLayout

@@ -1,4 +1,4 @@
-package com.minmax.ultradex.jei.categories.pokemonspawn
+package com.minmax.ultradex.jei.recipes
 
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
