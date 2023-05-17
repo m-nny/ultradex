@@ -5,7 +5,6 @@ import com.pixelmonmod.api.pokemon.PokemonSpecification
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats
-import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies
 import mezz.jei.api.ingredients.IIngredientType
 import net.minecraft.util.text.ITextComponent
 
@@ -25,10 +24,6 @@ class PokemonIngredient(private val pokemon: Pokemon) : IIngredientType<PokemonS
         val HELPER = PokemonIngredientHelper()
         val RENDERER = PokemonIngredientRenderer()
 
-        fun getIngredients(): List<PokemonIngredient> =
-            PixelmonSpecies.getAll()
-                .flatMap { species -> species.forms }
-                .map(::fromForm)
 
         fun fromForm(form: Stats): PokemonIngredient {
             val pokemon = PokemonFactory.create(form.parentSpecies)

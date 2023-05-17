@@ -29,6 +29,7 @@ fun EvoCondition.getItems(): ItemStack? =
         is HeldItemCondition -> this.item.itemStack
         else -> null
     }
+
 fun rarityString(rarity: Float): IFormattableTextComponent {
     val rarityKey = "pixelmon.command.wiki.spawning.rarity." + when {
         rarity <= 10.0 -> "ultra_rare"

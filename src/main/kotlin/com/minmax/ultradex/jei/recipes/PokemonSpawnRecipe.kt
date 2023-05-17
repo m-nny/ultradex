@@ -1,5 +1,6 @@
 package com.minmax.ultradex.jei.recipes
 
+import com.minmax.ultradex.config.Settings
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
 import com.minmax.ultradex.jei.util.Font
@@ -8,13 +9,11 @@ import com.mojang.blaze3d.matrix.MatrixStack
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnInfoPokemon
 import com.pixelmonmod.pixelmon.api.util.ITranslatable
 import com.pixelmonmod.pixelmon.api.world.WeatherType
-import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning
 import mezz.jei.api.ingredients.IIngredients
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryExtension
 import net.minecraft.util.text.IFormattableTextComponent
 
-class PokemonSpawnRecipe(spawnInfo: SpawnInfoPokemon) :
-    IRecipeCategoryExtension {
+class PokemonSpawnRecipe(spawnInfo: SpawnInfoPokemon, val type: PokemonSpawnType) : IRecipeCategoryExtension {
     val pokemon = PokemonUtils.getOrdinaryPokemon(spawnInfo.pokemonSpec)
 
     private val weathers: String =
@@ -39,23 +38,22 @@ class PokemonSpawnRecipe(spawnInfo: SpawnInfoPokemon) :
         mouseX: Double,
         mouseY: Double
     ) {
-        Font.small.printString(matrixStack, rarity, X_TEXT, 3)
-        Font.small.printString(matrixStack, "Time: $times", X_TEXT, 11)
+        val xPos = Settings.JeiPositions.X_TEXT
+        var yPos = Settings.JeiPositions.Y_TEXT
+        Font.small.printString(matrixStack, rarity, xPos, yPos)
+        yPos += 8
+        if (times.isNotEmpty()) {
+            Font.small.printString(matrixStack, "Time: $times", xPos, yPos)
+            yPos += 8
+        }
+        if (type != PokemonSpawnType.STANDARD) {
+            Font.small.printString(matrixStack, "Type: ${type.type}", xPos, yPos)
+            yPos += 8
+        }
         if (weathers.isNotEmpty()) {
-            Font.small.printString(matrixStack, "Weather: $weathers", X_TEXT, 19)
+            Font.small.printString(matrixStack, "Weather: $weathers", xPos, yPos)
+            yPos += 8
         }
     }
 
-    companion object {
-        private const val X_TEXT = 31
-        fun getRecipes(): List<PokemonSpawnRecipe> {
-            val spawnSets = PixelmonSpawning.getAll()
-            val standardSpawnSet = spawnSets["standard"] ?: return emptyList()
-
-            return standardSpawnSet
-                .flatMap { spawnSet -> spawnSet.spawnInfos }
-                .filterIsInstance<SpawnInfoPokemon>()
-                .map { spawnInfo -> PokemonSpawnRecipe(spawnInfo) }
-        }
-    }
 }

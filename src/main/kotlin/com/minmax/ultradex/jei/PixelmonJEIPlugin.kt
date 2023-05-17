@@ -2,13 +2,12 @@ package com.minmax.ultradex.jei
 
 import com.minmax.ultradex.UltraDex
 import com.minmax.ultradex.jei.categories.PokemonDropCategory
-import com.minmax.ultradex.jei.recipes.PokemonDropRecipe
 import com.minmax.ultradex.jei.categories.PokemonEvolutionCategory
-import com.minmax.ultradex.jei.recipes.PokemonEvolutionRecipe
 import com.minmax.ultradex.jei.categories.PokemonSpawnCategory
-import com.minmax.ultradex.jei.recipes.PokemonSpawnRecipe
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
+import com.minmax.ultradex.jei.registires.PokemonRegistries
+import com.minmax.ultradex.jei.util.ReloadUtil
 import com.minmax.ultradex.reference.Reference
 import mezz.jei.api.IModPlugin
 import mezz.jei.api.JeiPlugin
@@ -25,13 +24,13 @@ class PixelmonJEIPlugin : IModPlugin {
         UltraDex.LOGGER.debug("registerIngredients()")
         registration.register(
             PokemonIngredient.TYPE,
-            PokemonIngredient.getIngredients(),
+            PokemonRegistries.getPokemons(),
             PokemonIngredient.HELPER,
             PokemonIngredient.RENDERER,
         )
         registration.register(
             BiomeIngredient.TYPE,
-            BiomeIngredient.getIngredients(),
+            PokemonRegistries.getBiomes(),
             BiomeIngredient.HELPER,
             BiomeIngredient.RENDERER,
         )
@@ -45,10 +44,13 @@ class PixelmonJEIPlugin : IModPlugin {
     }
 
     override fun registerRecipes(registration: IRecipeRegistration) {
+        UltraDex.LOGGER.debug("reloadRegistries()")
+        ReloadUtil.reloadPixelmonRegistries()
+
         UltraDex.LOGGER.debug("registerRecipes()")
-        registration.addRecipes(PokemonDropRecipe.getRecipes(), POKEMON_DROPS)
-        registration.addRecipes(PokemonEvolutionRecipe.getRecipes(), POKEMON_EVOLUTIONS)
-        registration.addRecipes(PokemonSpawnRecipe.getRecipes(), POKEMON_SPAWNING)
+        registration.addRecipes(PokemonRegistries.getDropsRecipes(), POKEMON_DROPS)
+        registration.addRecipes(PokemonRegistries.getEvoRecipes(), POKEMON_EVOLUTIONS)
+        registration.addRecipes(PokemonRegistries.getSpawnRecipes(), POKEMON_SPAWNING)
     }
 
 

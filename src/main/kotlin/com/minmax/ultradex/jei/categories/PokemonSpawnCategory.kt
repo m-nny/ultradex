@@ -2,11 +2,11 @@
 
 package com.minmax.ultradex.jei.categories
 
-import com.minmax.ultradex.config.Settings
+import com.minmax.ultradex.config.Settings.JeiPositions
 import com.minmax.ultradex.jei.PixelmonJEIPlugin
-import com.minmax.ultradex.jei.recipes.PokemonSpawnRecipe
 import com.minmax.ultradex.jei.ingredients.biome.BiomeIngredient
 import com.minmax.ultradex.jei.ingredients.pokemon.PokemonIngredient
+import com.minmax.ultradex.jei.recipes.PokemonSpawnRecipe
 import com.minmax.ultradex.reference.Resources
 import com.mojang.blaze3d.matrix.MatrixStack
 import mezz.jei.api.gui.IRecipeLayout
@@ -36,21 +36,21 @@ class PokemonSpawnCategory(guiHelper: IGuiHelper) : IRecipeCategory<PokemonSpawn
 
         var slot = 0
         var yOffset = 0
-        for (i in 0 until Settings.Jei.SpawnCategory.ITEMS_PER_ROW) {
+        for (i in 0 until JeiPositions.ITEMS_PER_ROW) {
             var xOffset = 0
-            for (ii in 0 until Settings.Jei.SpawnCategory.ITEMS_PER_COLUMN) {
-                biomeGroup.init(slot++, true, X_FIRST_ITEM + xOffset, Y_FIRST_ITEM + yOffset)
-                xOffset += Settings.Jei.SpawnCategory.SLOT_SIZE
+            for (ii in 0 until JeiPositions.ITEMS_PER_COLUMN) {
+                biomeGroup.init(slot++, true, JeiPositions.X_FIRST_ITEM + xOffset, JeiPositions.Y_FIRST_ITEM + yOffset)
+                xOffset += JeiPositions.SLOT_SIZE
             }
-            yOffset += Settings.Jei.SpawnCategory.SLOT_SIZE
+            yOffset += JeiPositions.SLOT_SIZE
         }
-        val slotSize = min(recipe.biomes.size, Settings.Jei.SpawnCategory.ITEMS_TOTAL)
+        val slotSize = min(recipe.biomes.size, JeiPositions.ITEMS_TOTAL)
         for (i in 0 until slotSize) {
             biomeGroup[i] = recipe.biomes[i]
         }
 
         val pokemonGroup = recipeLayout.getIngredientsGroup(PokemonIngredient.TYPE)
-        pokemonGroup.init(0, false, X_POKEMON, Y_POKEMON)
+        pokemonGroup.init(0, false, JeiPositions.X_POKEMON, JeiPositions.Y_POKEMON)
         pokemonGroup[0] = recipe.getPokemonIngredient()
     }
 
@@ -60,13 +60,5 @@ class PokemonSpawnCategory(guiHelper: IGuiHelper) : IRecipeCategory<PokemonSpawn
 
     override fun setIngredients(recipe: PokemonSpawnRecipe, ingredients: IIngredients) {
         recipe.setIngredients(ingredients)
-    }
-
-    companion object {
-        private const val X_FIRST_ITEM = 4
-        private const val Y_FIRST_ITEM = 33
-
-        private const val X_POKEMON = 8
-        private const val Y_POKEMON = 8
     }
 }

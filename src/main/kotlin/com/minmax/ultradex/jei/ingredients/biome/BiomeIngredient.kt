@@ -53,8 +53,6 @@ class BiomeIngredient(private val biome: Biome) : IIngredientType<Biome> {
         val HELPER = BiomeIngredientHelper()
         val RENDERER = BiomeIngredientRenderer()
 
-        fun getIngredients(): List<BiomeIngredient> =
-            ForgeRegistries.BIOMES.values.map { biome -> BiomeIngredient(biome) }
 
         fun fromResourceLocation(rl: ResourceLocation): BiomeIngredient? =
             ForgeRegistries.BIOMES.getValue(rl)?.let { BiomeIngredient(it) }

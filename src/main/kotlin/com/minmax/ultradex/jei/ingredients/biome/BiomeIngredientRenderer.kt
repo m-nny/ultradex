@@ -10,8 +10,6 @@ class BiomeIngredientRenderer : IIngredientRenderer<BiomeIngredient> {
     override fun render(matrixStack: MatrixStack, xPosition: Int, yPosition: Int, ingredient: BiomeIngredient?) {
         if (ingredient == null) return
         RenderHelper.renderItemStack(matrixStack, xPosition, yPosition, ingredient.getRepresentativeItemStack())
-//        val itemRenderer = Minecraft.getInstance().itemRenderer
-//        itemRenderer.renderGuiItem(ingredient.getRepresentativeItemStack(), xPosition, yPosition)
     }
 
     override fun getTooltip(ingredient: BiomeIngredient, tooltipFlag: ITooltipFlag): List<ITextComponent> {
