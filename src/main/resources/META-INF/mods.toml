@@ -72,3 +72,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magn
     versionRange="[9.1.3,)"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.ultradex]]
+    modId="journeymap"
+    mandatory=true
+    versionRange="[5.8,)"
+    ordering="NONE"
+    side="CLIENT"

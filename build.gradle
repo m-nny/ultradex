@@ -46,6 +46,8 @@ minecraft {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 ultradex {
                     source sourceSets.main
@@ -126,17 +128,23 @@ repositories {
         name "ModMaven"
         url "https://modmaven.dev"
     }
+    maven {
+        name "JourneyMap (Public)"
+        url "https://jm.gserv.me/repository/maven-public/"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    implementation 'thedarkcolour:kotlinforforge:1.16.0'
-    implementation fg.deobf("curse.maven:pixelmon-389487:4395992")
+    implementation "thedarkcolour:kotlinforforge:${version_kotlinforforge}"
+    implementation fg.deobf("curse.maven:pixelmon-${version_pixelmon}")
 
     compileOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}:api")
+    compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: version_jm_api, changing: true)
 
     runtimeOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}")
+    runtimeOnly fg.deobf("curse.maven:journeymap-${version_jm}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -199,6 +207,7 @@ curseforge {
         }
         relations {
             requiredDependency "jei"
+            requiredDependency "journeymap"
             requiredDependency "pixelmon"
         }
     }

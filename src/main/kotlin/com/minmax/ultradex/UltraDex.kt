@@ -9,4 +9,8 @@ object UltraDex {
     const val MOD_ID = "ultradex"
 
     val LOGGER: Logger = LogManager.getLogger()
+
+    init {
+        LOGGER.debug("UltraDex init")
+    }
 }
