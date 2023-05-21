@@ -4,9 +4,6 @@ import mezz.jei.api.ingredients.IIngredientType
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.text.ITextComponent
-import net.minecraft.util.text.StringTextComponent
-import net.minecraft.util.text.TranslationTextComponent
 import net.minecraft.world.biome.Biome
 import net.minecraftforge.registries.ForgeRegistries
 
@@ -20,11 +17,6 @@ class BiomeIngredient(private val biome: Biome) : IIngredientType<Biome> {
     }
 
     fun getUniqueString() = getBiome().toString()
-
-    fun getStringTextComponent(): ITextComponent {
-        val rl = ForgeRegistries.BIOMES.getKey(this.biome) ?: return StringTextComponent(getUniqueString())
-        return TranslationTextComponent("biome." + rl.namespace + '.' + rl.path.replace('/', '.'))
-    }
 
     fun getRepresentativeItemStack(): ItemStack {
         return when (biome.biomeCategory) {

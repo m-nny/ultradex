@@ -139,12 +139,13 @@ dependencies {
 
     implementation "thedarkcolour:kotlinforforge:${version_kotlinforforge}"
     implementation fg.deobf("curse.maven:pixelmon-${version_pixelmon}")
+    implementation fg.deobf("curse.maven:journeymap-${version_jm}")
 
     compileOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}:api")
-    compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: version_jm_api, changing: true)
+//    compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: version_jm_api, changing: true)
 
     runtimeOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}")
-    runtimeOnly fg.deobf("curse.maven:journeymap-${version_jm}")
+//    runtimeOnly fg.deobf("curse.maven:journeymap-${version_jm}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

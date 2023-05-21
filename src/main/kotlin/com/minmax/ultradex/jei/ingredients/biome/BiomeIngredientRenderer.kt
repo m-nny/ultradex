@@ -1,6 +1,7 @@
 package com.minmax.ultradex.jei.ingredients.biome
 
 import com.minmax.ultradex.jei.util.RenderHelper
+import com.minmax.ultradex.util.BiomeUtils.getDisplayName
 import com.mojang.blaze3d.matrix.MatrixStack
 import mezz.jei.api.ingredients.IIngredientRenderer
 import net.minecraft.client.util.ITooltipFlag
@@ -13,7 +14,7 @@ class BiomeIngredientRenderer : IIngredientRenderer<BiomeIngredient> {
     }
 
     override fun getTooltip(ingredient: BiomeIngredient, tooltipFlag: ITooltipFlag): List<ITextComponent> {
-        val name = ingredient.getStringTextComponent()
+        val name = ingredient.getBiome().getDisplayName()
         return listOf(name)
     }
 }
