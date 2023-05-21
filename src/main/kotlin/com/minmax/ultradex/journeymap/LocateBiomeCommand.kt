@@ -1,6 +1,8 @@
 package com.minmax.ultradex.journeymap
 
+import com.minmax.ultradex.UltraDex
 import com.minmax.ultradex.util.BiomeUtils.getDisplayName
+import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import journeymap.client.data.DataCache
@@ -12,26 +14,60 @@ import journeymap.common.nbt.RegionDataStorageHandler
 import net.minecraft.client.Minecraft
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
+import net.minecraft.command.arguments.ResourceLocationArgument
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentUtils
 import net.minecraft.util.text.TranslationTextComponent
-import net.minecraft.world.biome.Biomes
 import net.minecraftforge.registries.ForgeRegistries
 import kotlin.math.floor
 import kotlin.math.sqrt
 
 
 object LocateBiomeCommand {
-    val CMD: LiteralArgumentBuilder<CommandSource> = Commands.literal("test")
-        .requires { cs -> cs.hasPermission(0) }
-        .executes { ctx -> execute(ctx.source, Biomes.DESERT.location()) }
+//    TODO(minmax): add suggestions
+//    private val ALL_BIOMES: SuggestionProvider<CommandSource> = SuggestionProviders.register<CommandSource>(
+//        ResourceLocation(UltraDex.MOD_ID, "all_biomes")
+//    ) { _, builder -> ISuggestionProvider.suggestResource(ForgeRegistries.BIOMES.keys, builder) }
 
-    private fun execute(src: CommandSource, biomeRl: ResourceLocation): Int {
+    val CMD: LiteralArgumentBuilder<CommandSource> = Commands.literal("biomes")
+        .requires { cs -> cs.hasPermission(0) }
+        .then(Commands
+            .argument("biome", ResourceLocationArgument.id())
+            .executes { ctx -> execute(ctx.source, ctx.getArgument("biome", ResourceLocation::class.java)) }
+            .then(
+                Commands.argument("maxDistance", IntegerArgumentType.integer())
+                    .executes { ctx ->
+                        execute(
+                            ctx.source,
+                            ctx.getArgument("biome", ResourceLocation::class.java),
+                            IntegerArgumentType.getInteger(ctx, "maxDistance")
+                        )
+                    }
+                    .then(
+                        Commands.argument("step", IntegerArgumentType.integer())
+                            .executes { ctx ->
+                                execute(
+                                    ctx.source,
+                                    ctx.getArgument("biome", ResourceLocation::class.java),
+                                    IntegerArgumentType.getInteger(ctx, "maxDistance"),
+                                    IntegerArgumentType.getInteger(ctx, "step"),
+                                )
+                            })
+            )
+        )
+
+    private fun execute(
+        src: CommandSource,
+        biomeRl: ResourceLocation,
+        maxDistance: Int = MAX_DISTANCE,
+        step: Int = STEPS
+    ): Int {
+        UltraDex.LOGGER.debug("locateBiome {} {} {}", biomeRl, maxDistance, step)
         val biome = ForgeRegistries.BIOMES.getValue(biomeRl) ?: throw INVALID_EXCEPTION.create(biomeRl)
         val biomeName = biome.getDisplayName()
 
-        val biomePos = locateBiome(biomeRl, BlockPos(src.position), MAX_DISTANCE, STEPS)
+        val biomePos = locateBiome(biomeRl, BlockPos(src.position), maxDistance, step)
             ?: throw NOT_FOUND_EXCEPTION.create(biomeName)
         val distance = floor(BlockPos(src.position).distance(biomePos)).toInt()
         src.sendSuccess(
@@ -53,8 +89,11 @@ object LocateBiomeCommand {
         val player = DataCache.getPlayer()
         val mapType = MapType.biome(player)
         return (-maxDistance..maxDistance step step)
-            .zip(-maxDistance..maxDistance step step)
-            .map { BlockPos(pos.x + it.first, pos.y, pos.z + it.second) }
+            .flatMap { dx ->
+                (-maxDistance..maxDistance step step).map { dz ->
+                    BlockPos(pos.x + dx, pos.y, pos.z + dz)
+                }
+            }
             .find { getJMBiome(it, mapType) == targetBiome }
     }
 
@@ -67,7 +106,11 @@ object LocateBiomeCommand {
         )
         val regionData = RegionDataStorageHandler.getInstance().getRegionDataAsyncNoCache(regionPos, mapType)
         val biome = regionData.getBiome(newPos) ?: return null
-        return BiomeHelper.getBiomeResource(biome)
+        val biomeRl = BiomeHelper.getBiomeResource(biome)
+        if (biomeRl != null) {
+            UltraDex.LOGGER.debug("found biome {} at {}", biomeRl, newPos)
+        }
+        return biomeRl
     }
 
     private fun BlockPos.distance(pos: BlockPos): Double {
